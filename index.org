@@ -1,5 +1,5 @@
 #+TITLE: Using OAI-PMH protocol for Data Ingest into VIVO Instances
-#+AUTHOR: Alexandre Rademaker (IBM Research, FGV) and Violeta Ilik (Texas A&M University)
+#+AUTHOR: Alexandre Rademaker (IBM Research and FGV), Violeta Ilik (Texas A&M University)
 #+OPTIONS: ^:nil num:nil
 #+OPTIONS: toc:nil 
 #+PRETTIFY_CSS:     resources/styles/prettify.css
