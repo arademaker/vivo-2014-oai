@@ -154,4 +154,6 @@
   #+END_HTML
 
   Slides will be available at http://arademaker.github.com. Our VIVO
-  instance [[http://logics.emap.fgv.br:8080/vivo/][VIVO@FGV]].
+  instance [[http://logics.emap.fgv.br:8080/vivo/][VIVO@FGV]]. The code is at https://github.com/arademaker/oai-client
+
+
