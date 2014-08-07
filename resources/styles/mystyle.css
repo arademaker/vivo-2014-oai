@@ -1,0 +1,54 @@
+#landing-slide hgroup {
+  margin-bottom:80px;
+}
+
+#landing-slide h1 {
+  font-size:50px
+}
+
+#landing-slide p {
+  font-size:24px;
+  line-height:32px;
+}
+
+.slide p {
+  font-size:24px;
+  line-height:38px;
+}
+
+.slide ul li {
+  list-style-type:disc;
+  font-size:22px;
+  line-height:30px;
+}
+
+.slide ol li {
+  list-style-type:decimal;
+  font-size:22px;
+  line-height:30px;
+}
+
+#toc-list li {
+  font-size:26px;
+  line-height:33px;
+  opacity:0.85;
+}
+
+#toc-list ul {
+  margin-top:10px;
+}
+
+div.figure {
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.figure img {
+    display: block;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    width: auto;
+}

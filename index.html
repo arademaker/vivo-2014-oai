@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Using OAI-PMH protocol for Data Ingest into VIVO Instances</title>
+<!-- 2014-08-07 Thu 10:43 -->
+<meta  http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+<meta  charset="utf-8">
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Alexandre Rademaker (IBM Research, FGV) and Violeta Ilik (Texas A&amp;M University)">
+<link id="prettify-link" href="resources/styles/prettify.css" rel="stylesheet" disabled />
+<link href="resources/styles/fonts.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="resources/styles/presentation.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="resources/styles/common.css" rel="stylesheet" type="text/css" media="screen" />
+<link class="theme" href="resources/styles/default.css" rel="stylesheet" type="text/css" media="screen" />
+<link class="theme" href="resources/styles/moon.css" rel="stylesheet" type="text/css" media="screen" />
+<link class="theme" href="resources/styles/sand.css" rel="stylesheet" type="text/css" media="screen"/>
+<link class="theme" href="resources/styles/sea_wave.css" rel="stylesheet" type="text/css" media="screen"/>
+<link rel="stylesheet" href="resources/styles/mystyle.css" type="text/css" />
+</head>
+<body>
+<div id="flex-container">
+<nav id="helpers">
+<button title="Previous slide" id="nav-prev" class="nav-prev">&#8701;</button>
+<button title="Jump to a random slide" id="slide-no">5</button>
+<button title="Next slide" id="nav-next" class="nav-next">&#8702;</button>
+<menu>
+<!-- <button type="checkbox" data-command="toc" title="Table of Contents" class="toc">TOC</button> -->
+<!-- <button type="checkbox" data-command="resources" title="View Related Resources">&#9734;</button> -->
+<!-- <button type="checkbox" data-command="notes" title="View Slide Notes">&#9999;</button> -->
+<!-- <button type="checkbox" data-command="source" title="View slide source">&#8635;</button> -->
+<button type="checkbox" data-command="help" title="View Help">?</button>
+</menu>
+</nav>
+<div class="slides">
+<div id="presentation-counter">Loading...</div>
+<div class="slide title-slide" id="landing-slide">
+<section class="middle">
+<hgroup>
+<h1>Using OAI-PMH protocol for Data Ingest into VIVO Instances</h1>
+<h2></h2>
+</hgroup>
+<p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
+<p class="author">Author: Alexandre Rademaker (IBM Research, FGV) and Violeta Ilik (Texas A&amp;M University)</p>
+<p class="date">Created: 2014-08-07 Thu 10:43</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.3.1 (<a href="http://orgmode.org">Org</a> mode 8.2.7b)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+
+</section>
+</div>
+
+<div id="outline-container-sec-1" class="slide transitionSlide">
+<header id="sec-1">The Motivation</header>
+<section>
+<ul class="org-ul">
+<li>Digital Libraries (Repositories) are among other excellent source
+of data to VIVO Instances
+</li>
+<li>Data is usually curated by specialists (librarians) 
+</li>
+<li>Almost all institutions are implementing digital libraries for
+thesis, dissertations, technical reports etc.
+</li>
+<li>Both FGV and Texas A&amp;M use DSpace 
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-2" class="slide transitionSlide">
+<header id="sec-2">OAI-PMH Protocol</header>
+<section>
+<ul class="org-ul">
+<li>Open Archives Initiative Protocol for Metadata Harvesting
+(OAI-PMH) version 2.0 (<a href="http://www.openarchives.org">http://www.openarchives.org</a>)
+</li>
+
+<li>Low-barrier mechanism for repository interoperability.
+</li>
+
+<li>Data Providers are repositories that expose structured metadata
+via OAI-PMH.
+</li>
+
+<li>Service Providers make OAI-PMH service requests to harvest that
+metadata.
+</li>
+
+<li>OAI-PMH is a set of six verbs or services that are invoked within
+HTTP.
+</li>
+
+<li>Implementations as data providers: DSpace, OJS, OCS etc.
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-3" class="slide transitionSlide">
+<header id="sec-3">Metadata Formats</header>
+<section>
+<ul class="org-ul">
+<li>Each case will have its own problems and benefits
+</li>
+<li>METS doesn't expose language tags. See <a href="http://bibliotecadigital.fgv.br/dspace/handle/10438/11877?show=full">here</a> and <a href="http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=oai:bibliotecadigital.fgv.br:10438/11877">here</a>
+</li>
+<li>DIM exposes language tags. See <a href="http://repository.tamu.edu/dspace-oai/request?verb=ListRecords&metadataPrefix=dim&set=com_1969.1_2492">here</a>.
+</li>
+<li><a href="http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:bibliotecadigital.fgv.br:10438/11877">OAI_DC</a> doesn't exposes the qualified fields
+(i.e. contributor.advisor and contributor.other are mixed into
+contributor)
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-4" class="slide transitionSlide">
+<header id="sec-4">Our Cases</header>
+<section>
+<ul class="org-ul">
+<li>FGV Digital Repository
+<ul class="org-ul">
+<li><a href="http://bibliotecadigital.fgv.br/dspace/">http://bibliotecadigital.fgv.br/dspace/</a> (digital collections:
+thesis, dissertations, technical reports etc)
+<ul class="org-ul">
+<li>Dspace/OAI (using <a href="http://bibliotecadigital.fgv.br/oai/request?verb=ListMetadataFormats">1.7.2</a>, new <a href="http://demo.dspace.org/oai/request?verb=ListMetadataFormats">4.2</a>)
+</li>
+</ul>
+</li>
+<li><a href="http://bibliotecadigital.fgv.br/ojs/">http://bibliotecadigital.fgv.br/ojs/</a> (journals published by FGV)
+<ul class="org-ul">
+<li>OJS/OAI (using <a href="http://bibliotecadigital.fgv.br/ojs/index.php/rbe/oai/?verb=ListMetadataFormats">2.2.4</a>, new <a href="http://journals.sfu.ca/present/index.php/demojournal/oai?verb=ListMetadataFormats">2.4.4</a>)
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Texas A&amp;M OAK Trust Repository
+<ul class="org-ul">
+<li><a href="http://oaktrust.library.tamu.edu">http://oaktrust.library.tamu.edu</a>
+<ul class="org-ul">
+<li>DSpace/OAI <a href="http://repository.tamu.edu/dspace-oai/request?verb=ListMetadataFormats">3.2</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-5" class="slide transitionSlide">
+<header id="sec-5">Data Quality</header>
+<section>
+<p>
+Some examples:
+</p>
+
+<ul class="org-ul">
+<li>Incomplete qualifiers. See <a href="http://bibliotecadigital.fgv.br/dspace/handle/10438/11831?show=full">here</a>.
+</li>
+<li>Subjects, topics and controlled vocabularies. See again <a href="http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=oai:bibliotecadigital.fgv.br:10438/11877">here</a>.
+</li>
+<li>Lack of identifiers for entities. A person is only identified by a
+name.
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-6" class="slide transitionSlide">
+<header id="sec-6">Retrieving thesis from DSpace</header>
+<section>
+<ul class="org-ul">
+<li>Decide which metadata format to use.
+
+<ol class="org-ol">
+<li>If we use the <a href="http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=rdf&identifier=oai:bibliotecadigital.fgv.br:10438/11877">rdf metadata format</a>, we just need to transform
+XML/RDF to RDF-VIVO using SPARQL.
+
+<pre class="example">
+insert 
+{ graph &lt;http://www.fgv.br/vivo/import/&gt; 
+  {            
+   [ vivo:relates ?thesis ;
+     vivo:relates ?person ;
+     a vivo:Authorship ;
+     vivo:rank "1"^^xsd:int ] . 
+  } }
+where { ?thesis dc:author ?person ;
+          rdf:type ow:Publication . }
+</pre>
+</li>
+
+<li>If we use other format like METS, we need to transform XML to
+RDF-VIVO using XSLT. See the <a href="http://repository.tamu.edu/dspace-oai/request?verb=ListRecords&metadataPrefix=mets&set=col_1969.1_2">input</a> and the <a href="https://github.com/arademaker/oai-pmh2rdf/blob/master/mets2rdf.xsl">transformation</a>.
+</li>
+</ol>
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-7" class="slide transitionSlide">
+<header id="sec-7">Current XSLT mets2vivo Limitations</header>
+<section>
+<p>
+METS differences in DSpace versions
+</p>
+
+<pre class="example">
+&lt;xmlData&gt;
+ ...
+ &lt;mods:titleInfo&gt;
+  &lt;mods:title&gt;A DSP embedded optical naviagtion system&lt;/mods:title&gt;
+ &lt;/mods:titleInfo&gt;
+ ...
+&lt;/xmlData&gt;
+</pre>
+
+<p>
+versus 
+</p>
+
+<pre class="example">
+&lt;xmlData&gt;
+  ...
+  &lt;mods:titleInfo&gt;A internacionalização de uma
+    empresa brasileira de serviços de saúde na década
+    de 1990: estudo de caso sobre AMIL&lt;/mods:titleInfo&gt;
+  ...
+&lt;/xmlData&gt;
+</pre>
+</section>
+
+</div>
+<div id="outline-container-sec-8" class="slide transitionSlide">
+<header id="sec-8">Next Steps</header>
+<section>
+<ul class="org-ul">
+<li>Retrieve sets (collections)
+</li>
+<li>Apply the transformation
+</li>
+<li>Deduplication and validation the data in a external triple store
+</li>
+<li>Ingest data into VIVO
+</li>
+</ul>
+</section>
+
+</div>
+<div id="outline-container-sec-9" class="slide transitionSlide">
+<header id="sec-9">Data ingest into VIVO</header>
+<section>
+<ul class="org-ul">
+<li>Two options: (1) SPARQL Update API; (2) filegraph directory.
+</li>
+
+<li>To clean the vitro-kb-2 before a new ingesting:
+</li>
+</ul>
+<pre class="example">
+update=clear graph &lt;http://vitro.mannlib.cornell.edu/default/vitro-kb-2&gt;
+</pre>
+
+<ul class="org-ul">
+<li>To ingest the new-data.rdf
+</li>
+</ul>
+<pre class="example">
+update=LOAD &lt;http://nlp.emap.fgv.br/new-data.rdf&gt; into 
+ graph &lt;http://vitro.mannlib.cornell.edu/default/vitro-kb-2&gt;
+</pre>
+
+<ul class="org-ul">
+<li>The command line
+</li>
+</ul>
+<pre class="example">
+curl -i -d 'email=MYUSER' -d 'password=MYPASS' -d '@FILE.sparql' 
+ 'http://localhost:8080/vivo/api/sparqlUpdate'
+</pre>
+</section>
+
+</div>
+<div id="outline-container-sec-10" class="slide transitionSlide">
+<header id="sec-10">Conclusion</header>
+<section>
+<p style="margin: 3cm 0 2cm 0; font-size: 50px; text-align: center;">Thank you!</p>
+
+<p style="margin: 2cm 0 3cm 0; font-size: 50px; text-align: center;">Questions?</p>
+
+<p>
+Slides will be available at <a href="http://arademaker.github.com">http://arademaker.github.com</a>. Our VIVO
+instance <a href="http://logics.emap.fgv.br:8080/vivo/">VIVO@FGV</a>.
+</p>
+</section>
+</div><aside id="help" class="sidebar invisible" style="display: none;">
+<table>
+<caption>Help</caption>
+<tbody>
+<tr>
+<th>Move Around</th>
+<td>&larr;&nbsp;&rarr;</td>
+</tr>
+<tr>
+<th>Change Theme</th>
+<td>t</td>
+</tr>
+<tr>
+<th>Syntax Highlight</th>
+<td>h</td>
+</tr>
+<tr>
+<th>Toggle 3D</th>
+<td>3</td>
+</tr>
+<tr>
+<th>Help</th>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</aside>
+</div>
+</div>
+<!--[if lt IE 9]>
+<script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">
+</script>
+<script>CFInstall.check({ mode: "overlay" });</script>
+<![endif]-->
+<script src="resources/js/prettify.js" onload="prettyPrint();" defer></script>
+<script src="resources/js/utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+#+TITLE: Using OAI-PMH protocol for Data Ingest into VIVO Instances
+#+AUTHOR: Alexandre Rademaker (IBM Research, FGV) and Violeta Ilik (Texas A&M University)
+#+OPTIONS: ^:nil num:nil
+#+OPTIONS: toc:nil 
+#+PRETTIFY_CSS:     resources/styles/prettify.css
+#+FONTS_CSS:        resources/styles/fonts.css
+#+PRESENTATION_CSS: resources/styles/presentation.css
+#+COMMON_CSS:       resources/styles/common.css
+#+DEFAULT_CSS:      resources/styles/default.css
+#+MOON_CSS:         resources/styles/moon.css
+#+SAND_CSS:         resources/styles/sand.css
+#+SEA_WAVE_CSS:     resources/styles/sea_wave.css
+#+IE_LT_9_JS:       http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js
+#+PRETTIFY_JS:      resources/js/prettify.js
+#+UTILS_JS:         resources/js/utils.js
+#+HTML_HEAD:        <link rel="stylesheet" href="resources/styles/mystyle.css" type="text/css" />
+
+* The Motivation
+  
+  - Digital Libraries (Repositories) are among other excellent source
+    of data to VIVO Instances
+  - Data is usually curated by specialists (librarians) 
+  - Almost all institutions are implementing digital libraries for
+    thesis, dissertations, technical reports etc.
+  - Both FGV and Texas A&M use DSpace 
+
+* OAI-PMH Protocol
+
+  - Open Archives Initiative Protocol for Metadata Harvesting
+    (OAI-PMH) version 2.0 (http://www.openarchives.org)
+
+  - Low-barrier mechanism for repository interoperability.
+
+  - Data Providers are repositories that expose structured metadata
+    via OAI-PMH.
+
+  - Service Providers make OAI-PMH service requests to harvest that
+    metadata.
+
+  - OAI-PMH is a set of six verbs or services that are invoked within
+    HTTP.
+
+  - Implementations as data providers: DSpace, OJS, OCS etc.
+
+* Metadata Formats
+
+  - Each case will have its own problems and benefits
+  - METS doesn't expose language tags. See [[http://bibliotecadigital.fgv.br/dspace/handle/10438/11877?show=full][here]] and [[http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=oai:bibliotecadigital.fgv.br:10438/11877][here]]
+  - DIM exposes language tags. See [[http://repository.tamu.edu/dspace-oai/request?verb=ListRecords&metadataPrefix=dim&set=com_1969.1_2492][here]].
+  - [[http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:bibliotecadigital.fgv.br:10438/11877][OAI_DC]] doesn't exposes the qualified fields
+    (i.e. contributor.advisor and contributor.other are mixed into
+    contributor)
+
+* Our Cases
+
+  - FGV Digital Repository
+    - http://bibliotecadigital.fgv.br/dspace/ (digital collections:
+      thesis, dissertations, technical reports etc)
+      - Dspace/OAI (using [[http://bibliotecadigital.fgv.br/oai/request?verb=ListMetadataFormats][1.7.2]], new [[http://demo.dspace.org/oai/request?verb=ListMetadataFormats][4.2]])
+    - http://bibliotecadigital.fgv.br/ojs/ (journals published by FGV)
+      - OJS/OAI (using [[http://bibliotecadigital.fgv.br/ojs/index.php/rbe/oai/?verb=ListMetadataFormats][2.2.4]], new [[http://journals.sfu.ca/present/index.php/demojournal/oai?verb=ListMetadataFormats][2.4.4]])
+  - Texas A&M OAK Trust Repository
+    - http://oaktrust.library.tamu.edu
+      - DSpace/OAI [[http://repository.tamu.edu/dspace-oai/request?verb=ListMetadataFormats][3.2]]
+
+* Data Quality
+
+  Some examples:
+
+  - Incomplete qualifiers. See [[http://bibliotecadigital.fgv.br/dspace/handle/10438/11831?show=full][here]].
+  - Subjects, topics and controlled vocabularies. See again [[http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=oai:bibliotecadigital.fgv.br:10438/11877][here]].
+  - Lack of identifiers for entities. A person is only identified by a
+    name.
+
+* Retrieving thesis from DSpace
+
+  - Decide which metadata format to use.
+
+    1) If we use the [[http://bibliotecadigital.fgv.br/oai/request?verb=GetRecord&metadataPrefix=rdf&identifier=oai:bibliotecadigital.fgv.br:10438/11877][rdf metadata format]], we just need to transform
+       XML/RDF to RDF-VIVO using SPARQL.
+
+       #+BEGIN_EXAMPLE
+         insert 
+         { graph <http://www.fgv.br/vivo/import/> 
+           {            
+            [ vivo:relates ?thesis ;
+              vivo:relates ?person ;
+              a vivo:Authorship ;
+              vivo:rank "1"^^xsd:int ] . 
+           } }
+         where { ?thesis dc:author ?person ;
+                   rdf:type ow:Publication . }
+       #+END_EXAMPLE
+
+    2) If we use other format like METS, we need to transform XML to
+       RDF-VIVO using XSLT. See the [[http://repository.tamu.edu/dspace-oai/request?verb=ListRecords&metadataPrefix=mets&set=col_1969.1_2][input]] and the [[https://github.com/arademaker/oai-pmh2rdf/blob/master/mets2rdf.xsl][transformation]].
+
+* Current XSLT mets2vivo Limitations
+
+  METS differences in DSpace versions
+
+  #+BEGIN_EXAMPLE
+    <xmlData>
+     ...
+     <mods:titleInfo>
+      <mods:title>A DSP embedded optical naviagtion system</mods:title>
+     </mods:titleInfo>
+     ...
+    </xmlData>
+  #+END_EXAMPLE
+
+  versus 
+
+  #+BEGIN_EXAMPLE
+    <xmlData>
+      ...
+      <mods:titleInfo>A internacionalização de uma
+        empresa brasileira de serviços de saúde na década
+        de 1990: estudo de caso sobre AMIL</mods:titleInfo>
+      ...
+    </xmlData>
+  #+END_EXAMPLE
+
+* Next Steps
+
+  - Retrieve sets (collections)
+  - Apply the transformation
+  - Deduplication and validation the data in a external triple store
+  - Ingest data into VIVO
+
+* Data ingest into VIVO
+
+  - Two options: (1) SPARQL Update API; (2) filegraph directory.
+
+  - To clean the vitro-kb-2 before a new ingesting:
+  : update=clear graph <http://vitro.mannlib.cornell.edu/default/vitro-kb-2>
+  
+  - To ingest the new-data.rdf
+  : update=LOAD <http://nlp.emap.fgv.br/new-data.rdf> into 
+  :  graph <http://vitro.mannlib.cornell.edu/default/vitro-kb-2>
+
+  - The command line
+  : curl -i -d 'email=MYUSER' -d 'password=MYPASS' -d '@FILE.sparql' 
+  :  'http://localhost:8080/vivo/api/sparqlUpdate'
+
+* Conclusion
+
+  #+BEGIN_HTML
+  <p style="margin: 3cm 0 2cm 0; font-size: 50px; text-align: center;">Thank you!</p>
+  #+END_HTML
+
+  #+BEGIN_HTML
+  <p style="margin: 2cm 0 3cm 0; font-size: 50px; text-align: center;">Questions?</p>
+  #+END_HTML
+
+  Slides will be available at http://arademaker.github.com. Our VIVO
+  instance [[http://logics.emap.fgv.br:8080/vivo/][VIVO@FGV]].
